@@ -1,0 +1,9 @@
+Python packages needed for the project:
+
+flask
+
+flask-restx
+
+Install the dependencies using:
+
+pip install -r requirements.txt
