@@ -1,13 +1,19 @@
+La version correcte est :
+
 from flask import Flask
 from flask_restx import Api
+from .facade import HBnBFacade   # importer ton facade
 
 def create_app():
     """Factory function to create and configure the Flask app."""
     app = Flask(__name__)
-    
-    # Configs can go here
+
+    # Configs
     app.config['RESTX_MASK_SWAGGER'] = False
     app.config['JSON_SORT_KEYS'] = False
+
+    # Initialize Facade
+    app.facade = HBnBFacade()   # <-- juste instancier ton facade ici
 
     # Initialize API
     api = Api(app, version="1.0", title="HBnB API", description="HBnB Project API")
