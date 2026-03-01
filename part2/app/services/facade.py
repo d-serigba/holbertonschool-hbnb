@@ -1,16 +1,17 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
-from app.models.place import Place  # <--- Assure-toi que cet import est présent
+from app.models.place import Place
+from app.models.review import Review
 
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
+        self.amenity_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
         self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
 
-    # --- LOGIQUE UTILISATEURS ---
+    # --- USER OPERATIONS ---
     def create_user(self, user_data):
         user = User(**user_data)
         self.user_repo.add(user)
@@ -22,13 +23,7 @@ class HBnBFacade:
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
-    def get_all_users(self):
-        return self.user_repo.get_all()
-
-    def update_user(self, user_id, user_data):
-        return self.user_repo.update(user_id, user_data)
-
-    # --- LOGIQUE AMENITIES ---
+    # --- AMENITY OPERATIONS ---
     def create_amenity(self, amenity_data):
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
@@ -40,23 +35,15 @@ class HBnBFacade:
     def get_all_amenities(self):
         return self.amenity_repo.get_all()
 
-    def update_amenity(self, amenity_id, amenity_data):
-        return self.amenity_repo.update(amenity_id, amenity_data)
-
-    # --- LOGIQUE PLACES (Tâche 4) ---
+    # --- PLACE OPERATIONS ---
     def create_place(self, place_data):
-        # On extrait l'ID (le texte)
+        """Transforme l'ID en objet Owner et crée la Place."""
         owner_id = place_data.pop('owner_id', None)
-        # On va chercher le vrai pilote (l'objet User)
         owner = self.get_user(owner_id)
-        
         if not owner:
             return None
-
-        # On installe le vrai pilote dans les données de la Place
-        place_data['owner'] = owner
         
-        # On lance la fabrication
+        place_data['owner'] = owner
         new_place = Place(**place_data)
         self.place_repo.add(new_place)
         return new_place
@@ -69,14 +56,42 @@ class HBnBFacade:
 
     def update_place(self, place_id, place_data):
         return self.place_repo.update(place_id, place_data)
-        
+
     def add_amenity_to_place(self, place_id, amenity_id):
-        """Lien entre un logement et un équipement."""
         place = self.get_place(place_id)
         amenity = self.get_amenity(amenity_id)
-        
         if place and amenity:
-            # On utilise la méthode add_amenity que tu as créée dans ton modèle Place
             place.add_amenity(amenity)
             return place
         return None
+
+    # --- REVIEW OPERATIONS ---
+    def create_review(self, review_data):
+        user = self.get_user(review_data.get('user_id'))
+        place = self.get_place(review_data.get('place_id'))
+        if not user or not place:
+            return None
+
+        review_data['user'] = user
+        review_data['place'] = place
+        review_data.pop('user_id', None)
+        review_data.pop('place_id', None)
+
+        new_review = Review(**review_data)
+        self.review_repo.add(new_review)
+        return new_review
+
+    def get_review(self, review_id):
+        return self.review_repo.get(review_id)
+
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
+
+    def get_reviews_by_place(self, place_id):
+        return [r for r in self.get_all_reviews() if r.place.id == place_id]
+
+    def update_review(self, review_id, review_data):
+        return self.review_repo.update(review_id, review_data)
+
+    def delete_review(self, review_id):
+        return self.review_repo.delete(review_id)

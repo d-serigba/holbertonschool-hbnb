@@ -73,12 +73,13 @@ class PlaceList(Resource):
 @api.route('/<place_id>')
 class PlaceResource(Resource):
     def get(self, place_id):
-        """Get place details by ID"""
+        """Récupérer les détails d'un logement avec son propriétaire et ses avis"""
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
         
-        owner = place.owner
+        # On récupère les avis pour ce lieu via la façade
+        reviews = facade.get_reviews_by_place(place_id)
         
         return {
             'id': place.id,
@@ -88,15 +89,21 @@ class PlaceResource(Resource):
             'latitude': place.latitude,
             'longitude': place.longitude,
             'owner': {
-                'id': owner.id,
-                'first_name': owner.first_name,
-                'last_name': owner.last_name,
-                'email': owner.email
+                'id': place.owner.id,
+                'first_name': place.owner.first_name,
+                'last_name': place.owner.last_name,
+                'email': place.owner.email
             },
             'amenities': [{
                 'id': a.id,
                 'name': a.name
-            } for a in place.amenities]
+            } for a in place.amenities],
+            'reviews': [{ # <--- C'EST CETTE PARTIE QUI MANQUAIT
+                'id': r.id,
+                'text': r.text,
+                'rating': r.rating,
+                'user_name': f"{r.user.first_name} {r.user.last_name}"
+            } for r in reviews]
         }, 200
 
     @api.expect(place_model)
@@ -121,3 +128,10 @@ class PlaceAmenityResource(Resource):
         if not updated_place:
             return {'error': 'Place or Amenity not found'}, 404
         return {'message': 'Amenity added successfully to the place'}, 200
+
+@api.route('/<place_id>/reviews')
+class PlaceReviewList(Resource):
+    def get(self, place_id):
+        """Récupérer tous les avis d'un logement spécifique"""
+        reviews = facade.get_reviews_by_place(place_id)
+        return [{'id': r.id, 'text': r.text, 'rating': r.rating} for r in reviews], 200
