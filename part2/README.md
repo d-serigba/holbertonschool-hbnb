@@ -1,1 +1,1 @@
-hbnb part2 task 0
+hbnb part2 (il manque la task 6 mais tranquille 👍)
