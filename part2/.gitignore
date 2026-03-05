@@ -1,5 +1,20 @@
+# --- Environnement et Dépendances ---
 venv/
+env/
+.env
+
+# --- Fichiers Python compilés (Le "bruit") ---
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# --- Base de Données (Crucial pour le prochain projet Auth & DB) ---
 instance/
 *.db
+*.sqlite
+
+# --- Fichiers Système ---
+.DS_Store
+Thumbs.db
+.vscode/
