@@ -1,20 +1,18 @@
-# app/__init__.py
-
 from flask import Flask
 from flask_restx import Api
 from flask_jwt_extended import JWTManager
 from .models.base_model import db
 from .facade import HBnBFacade
-from config import Config  # ta classe Config doit contenir JWT_SECRET_KEY
+from config import Config
 
 
 def create_app(config_class=Config):
-    """Application Factory pour HBnB"""
+    """Application Factory"""
 
     app = Flask(__name__)
-
-    # ---------------- Config ----------------
     app.config.from_object(config_class)
+
+    # ---------------- Database ----------------
     db.init_app(app)
 
     # ---------------- JWT ----------------
@@ -31,20 +29,22 @@ def create_app(config_class=Config):
         description="HBnB Project API"
     )
 
-    # ---------------- Patch JSON pour objets SQLAlchemy ----------------
+    # ---------------- JSON Fix for SQLAlchemy ----------------
     def object_to_dict(obj):
-        if hasattr(obj, 'to_dict'):
+        if hasattr(obj, "to_dict"):
             return obj.to_dict()
         if isinstance(obj, list):
             return [object_to_dict(o) for o in obj]
         return obj
 
-    @api.representation('application/json')
+    @api.representation("application/json")
     def output_json(data, code, headers=None):
         from json import dumps
         dumped = dumps(object_to_dict(data), indent=4) + "\n"
         resp = app.response_class(
-            dumped, mimetype='application/json', status=code
+            dumped,
+            mimetype="application/json",
+            status=code
         )
         if headers:
             resp.headers.extend(headers)
@@ -56,12 +56,12 @@ def create_app(config_class=Config):
     from .services.amenity_service import ns as amenity_ns
     from .services.review_service import ns as review_ns
 
-    api.add_namespace(user_ns, path='/users')
-    api.add_namespace(place_ns, path='/places')
-    api.add_namespace(amenity_ns, path='/amenities')
-    api.add_namespace(review_ns, path='/reviews')
+    api.add_namespace(user_ns, path="/users")
+    api.add_namespace(place_ns, path="/places")
+    api.add_namespace(amenity_ns, path="/amenities")
+    api.add_namespace(review_ns, path="/reviews")
 
-    # ---------------- Création DB ----------------
+    # ---------------- Create DB ----------------
     with app.app_context():
         db.create_all()
 

@@ -1,21 +1,37 @@
 -- ---------------------------------------------------
--- HBnB Project: Schema SQL
+-- HBnB Project: Database Schema
 -- File: schema.sql
 -- ---------------------------------------------------
 
--- ------------------ USERS ------------------
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE IF EXISTS place_amenity;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS places;
+DROP TABLE IF EXISTS amenities;
+DROP TABLE IF EXISTS users;
+
+-- ---------------- USERS ----------------
+CREATE TABLE users (
     id TEXT PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
+    is_admin BOOLEAN DEFAULT 0,
+    created_at DATETIME,
+    updated_at DATETIME
 );
 
--- ------------------ PLACES ------------------
-CREATE TABLE IF NOT EXISTS places (
+-- ---------------- AMENITIES ----------------
+CREATE TABLE amenities (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    created_at DATETIME,
+    updated_at DATETIME
+);
+
+-- ---------------- PLACES ----------------
+CREATE TABLE places (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
     description TEXT,
@@ -23,37 +39,28 @@ CREATE TABLE IF NOT EXISTS places (
     latitude REAL,
     longitude REAL,
     owner_id TEXT NOT NULL,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(owner_id) REFERENCES users(id)
 );
 
--- ------------------ REVIEWS ------------------
-CREATE TABLE IF NOT EXISTS reviews (
+-- ---------------- REVIEWS ----------------
+CREATE TABLE reviews (
     id TEXT PRIMARY KEY,
     text TEXT NOT NULL,
     user_id TEXT NOT NULL,
     place_id TEXT NOT NULL,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(place_id) REFERENCES places(id)
 );
 
--- ------------------ AMENITIES ------------------
-CREATE TABLE IF NOT EXISTS amenities (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    description TEXT,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-);
-
--- ------------------ PLACE_AMENITY (association) ------------------
-CREATE TABLE IF NOT EXISTS place_amenity (
+-- ---------------- PLACE_AMENITY ----------------
+CREATE TABLE place_amenity (
     place_id TEXT NOT NULL,
     amenity_id TEXT NOT NULL,
     PRIMARY KEY (place_id, amenity_id),
-    FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE,
-    FOREIGN KEY (amenity_id) REFERENCES amenities(id) ON DELETE CASCADE
+    FOREIGN KEY(place_id) REFERENCES places(id),
+    FOREIGN KEY(amenity_id) REFERENCES amenities(id)
 );
