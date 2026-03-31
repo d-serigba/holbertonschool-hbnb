@@ -1,51 +1,54 @@
 ```mermaid
 erDiagram
+
     USERS {
-        STRING id PK
-        STRING first_name
-        STRING last_name
-        STRING email
-        STRING password
+        CHAR(36) id PK
+        VARCHAR(50) first_name
+        VARCHAR(50) last_name
+        VARCHAR(120) email
+        VARCHAR(128) password
         DATETIME created_at
         DATETIME updated_at
     }
 
     PLACES {
-        STRING id PK
-        STRING title
-        STRING description
-        FLOAT price
+        CHAR(36) id PK
+        VARCHAR(100) title
+        TEXT description
+        DECIMAL price
         FLOAT latitude
         FLOAT longitude
-        STRING owner_id FK
+        CHAR(36) owner_id FK
         DATETIME created_at
         DATETIME updated_at
     }
 
     AMENITIES {
-        STRING id PK
-        STRING name
-        STRING description
+        CHAR(36) id PK
+        VARCHAR(50) name
+        TEXT description
         DATETIME created_at
         DATETIME updated_at
     }
 
     REVIEWS {
-        STRING id PK
-        STRING text
-        STRING user_id FK
-        STRING place_id FK
+        CHAR(36) id PK
+        TEXT text
+        INT rating
+        CHAR(36) user_id FK
+        CHAR(36) place_id FK
         DATETIME created_at
         DATETIME updated_at
     }
 
     PLACE_AMENITY {
-        STRING place_id FK
-        STRING amenity_id FK
+        CHAR(36) place_id FK
+        CHAR(36) amenity_id FK
     }
 
+    USERS ||--o{ REVIEWS : has
     USERS ||--o{ PLACES : owns
-    USERS ||--o{ REVIEWS : writes
-    PLACES ||--o{ REVIEWS : has
-    PLACES }o--o{ AMENITIES : includes
+    PLACES ||--o{ REVIEWS : receives
+    PLACES ||--o{ PLACE_AMENITY : contains
+    AMENITIES ||--o{ PLACE_AMENITY : linked_to
 ```
