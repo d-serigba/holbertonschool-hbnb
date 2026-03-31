@@ -1,4 +1,4 @@
----
+```mermaid
 erDiagram
     USERS {
         STRING id PK
@@ -48,4 +48,4 @@ erDiagram
     USERS ||--o{ REVIEWS : writes
     PLACES ||--o{ REVIEWS : has
     PLACES }o--o{ AMENITIES : includes
----
+```
