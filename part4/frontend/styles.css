@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* CARDS */
+.place-card,
+.review-card {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+/* BUTTON */
+.details-button {
+    background: blue;
+    color: white;
+    padding: 5px;
+    text-decoration: none;
+}
+
+/* LOGIN BUTTON */
+.login-button {
+    background: orange;
+    padding: 5px;
+}
