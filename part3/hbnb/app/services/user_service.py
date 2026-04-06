@@ -2,10 +2,11 @@
 from flask import request, current_app
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required
+from sqlalchemy.exc import IntegrityError
 from app.auth.decorators import admin_required
- 
+
 ns = Namespace('users', description='User operations')
- 
+
 # ---------------- Modèles Swagger ----------------
 user_create_model = ns.model('UserCreate', {
     'first_name': fields.String(required=True, description='Prénom', example='John'),
@@ -14,7 +15,7 @@ user_create_model = ns.model('UserCreate', {
     'password': fields.String(required=True, description='Mot de passe', example='john1234'),
     'is_admin': fields.Boolean(description='Admin ?', example=False)
 })
- 
+
 user_update_model = ns.model('UserUpdate', {
     'first_name': fields.String(description='Prénom', example='John'),
     'last_name': fields.String(description='Nom', example='Doe'),
@@ -22,8 +23,7 @@ user_update_model = ns.model('UserUpdate', {
     'password': fields.String(description='Mot de passe', example='john1234'),
     'is_admin': fields.Boolean(description='Admin ?', example=False)
 })
- 
- 
+
 # ---------------- USERS LIST ----------------
 @ns.route('/')
 class UserList(Resource):
@@ -32,7 +32,7 @@ class UserList(Resource):
         """Retourne tous les users (authentifié)"""
         users = current_app.facade.get_users()
         return users, 200
- 
+
     @admin_required
     @ns.expect(user_create_model)
     def post(self):
@@ -44,10 +44,12 @@ class UserList(Resource):
         for field in required:
             if field not in data:
                 return {"error": f"{field} is required"}, 400
-        user = current_app.facade.create_user(data)
-        return user, 201
- 
- 
+        try:
+            user = current_app.facade.create_user(data)
+            return user, 201
+        except IntegrityError:
+            return {"error": "Email déjà utilisé"}, 409
+
 # ---------------- USER BY ID ----------------
 @ns.route('/<string:user_id>/')
 class UserResource(Resource):
@@ -58,7 +60,7 @@ class UserResource(Resource):
         if not user:
             return {"error": "User not found"}, 404
         return user, 200
- 
+
     @admin_required
     @ns.expect(user_update_model)
     def put(self, user_id):
@@ -68,7 +70,7 @@ class UserResource(Resource):
         if not user:
             return {"error": "User not found"}, 404
         return user, 200
- 
+
     @admin_required
     def delete(self, user_id):
         """Supprime un user (admin seulement)"""
