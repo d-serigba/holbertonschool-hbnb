@@ -4,11 +4,98 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Styles spécifiques pour la page login */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+        }
+
+        header .logo {
+            height: 50px;
+        }
+
+        nav a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        main {
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        main h1 {
+            margin-bottom: 20px;
+        }
+
+        main form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        main input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        main button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: orange;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        main button:hover {
+            background-color: darkorange;
+        }
+
+        main .icon {
+            width: 100px;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
 <body>
 
 <header>
-    <img src="images/logo.png" class="logo">
+    <img src="images/logo.png" class="logo" alt="Logo">
     <nav>
         <a href="index.html">Home</a>
         <a href="login.html" class="login-button">Login</a>
@@ -18,16 +105,23 @@
 <main>
     <h1>Login</h1>
 
-    <form>
-        <input type="email" placeholder="Email" required>
-        <input type="password" placeholder="Password" required>
+    <img src="images/icon.png" alt="Login Icon" class="icon">
+
+    <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
         <button type="submit">Login</button>
     </form>
+
+    <p id="error-message"></p>
 </main>
 
 <footer>
     <p>All rights reserved</p>
 </footer>
+
+<!-- Script JS pour login -->
+<script src="scripts.js"></script>
 
 </body>
 </html>

@@ -2,39 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Places</title>
+    <title>Home - HBNB</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        main { max-width: 1000px; margin: 20px auto; }
+        #filter-container { margin-bottom: 20px; }
+        .place-card { border: 1px solid #ddd; border-radius: 10px; padding: 10px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; }
+        .place-card img { width: 150px; height: auto; border-radius: 5px; }
+        .place-info { flex: 1; }
+        .details-button { background: blue; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; }
+    </style>
 </head>
 <body>
 
 <header>
-    <img src="images/logo.png" class="logo">
+    <img src="images/logo.png" class="logo" alt="Logo">
     <nav>
         <a href="index.html">Home</a>
-        <a href="login.html" class="login-button">Login</a>
+        <a href="login.html" id="login-link" class="login-button">Login</a>
     </nav>
 </header>
 
 <main>
     <h1>Places</h1>
 
-    <div class="place-card">
-        <h2>Nice Apartment</h2>
-        <p>Price: $100/night</p>
-        <a href="place.html" class="details-button">View Details</a>
+    <div id="filter-container">
+        <label for="price-filter">Filter by price:</label>
+        <select id="price-filter">
+            <option value="All">All</option>
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
     </div>
 
-    <div class="place-card">
-        <h2>Beach House</h2>
-        <p>Price: $200/night</p>
-        <a href="place.html" class="details-button">View Details</a>
+    <div id="places-list">
+        <!-- Les places seront ajoutées dynamiquement ici -->
     </div>
-
 </main>
 
 <footer>
     <p>All rights reserved</p>
 </footer>
 
+<script src="scripts.js"></script>
 </body>
 </html>

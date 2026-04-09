@@ -13,7 +13,7 @@ class HBnBFacade:
 
     def __init__(self):
         # Repository SQLAlchemy avec la session de la base
-        self.repo = SQLAlchemyRepository(db.session)
+        self.repo = SQLAlchemyRepository()
 
     # ---------------- USERS ----------------
     def create_user(self, data):
@@ -50,9 +50,11 @@ class HBnBFacade:
         for field in required_fields:
             if field not in data:
                 raise ValueError(f"{field} is required")
+        
         owner = self.get_user(data["owner_id"])
         if not owner:
             raise ValueError("owner_id does not correspond to any user")
+        
         place = Place(**data)
         return self.repo.add(place)
 
@@ -102,6 +104,16 @@ class HBnBFacade:
 
     # ---------------- REVIEWS ----------------
     def create_review(self, data):
+        # Validation des champs requis pour la Review (incluant le nouveau champ rating)
+        required_fields = ["text", "rating", "user_id", "place_id"]
+        for field in required_fields:
+            if field not in data:
+                raise ValueError(f"{field} is required")
+        
+        # Le rating doit être entre 1 et 5
+        if not (1 <= int(data['rating']) <= 5):
+            raise ValueError("Rating must be between 1 and 5")
+
         review = Review(**data)
         return self.repo.add(review)
 

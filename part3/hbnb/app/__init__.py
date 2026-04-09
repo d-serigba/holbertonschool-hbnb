@@ -6,11 +6,14 @@ from .models.base_model import db
 from .facade import HBnBFacade
 from config import Config
 
-
 def create_app(config_class=Config):
     """Application Factory"""
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    # Désactive la redirection automatique des slashes
+    # Cela permet d'appeler /places sans erreur CORS même si la route est /places/
+    app.url_map.strict_slashes = False
 
     # ---------------- Database ----------------
     db.init_app(app)

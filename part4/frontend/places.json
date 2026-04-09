@@ -1,0 +1,42 @@
+[
+  {
+    "id": "648acc80-a914-4b74-80eb-3e888ba3d11f",
+    "title": "Maison test",
+    "description": "Belle maison",
+    "price": 150,
+    "amenities": ["Wifi", "Parking"],
+    "reviews": []
+  },
+  {
+    "id": "9c545808-a280-4ec9-84a1-9558c8b90e7a",
+    "title": "Test User Place modifiée",
+    "description": "Pour tester PUT/DELETE",
+    "price": 60,
+    "amenities": ["Piscine"],
+    "reviews": []
+  },
+  {
+    "id": "ed65a6d6-2e7e-4085-b162-ff5446d4f43d",
+    "title": "Maison test",
+    "description": null,
+    "price": 50,
+    "amenities": [],
+    "reviews": []
+  },
+  {
+    "id": "1f8cdea7-4adf-4101-b475-2943b9f5a396",
+    "title": "Appartement modifié",
+    "description": "Nouvelle description",
+    "price": 120,
+    "amenities": ["Balcon", "Ascenseur"],
+    "reviews": []
+  },
+  {
+    "id": "47776a56-2ee1-4d6a-b1b0-ee1c54b753cd",
+    "title": "Appartement central",
+    "description": "Bel appartement",
+    "price": 100,
+    "amenities": ["Wifi", "Cuisine équipée"],
+    "reviews": []
+  }
+]
