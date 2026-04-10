@@ -1,160 +1,205 @@
-# holbertonschool-hbnb
+# 🏠 HBnB Project — Holberton School AirBnB Clone
 
-# HBnB Project: Technical Documentation
+> A full-stack AirBnB-inspired web application built across **4 progressive projects**, covering architecture design, REST API development, database persistence, authentication, and frontend integration.
 
-## *The Strategic Blueprint for a Scalable Booking System*
-
-### 1. Introduction
-
-**Purpose and Scope**
-This technical document serves as a comprehensive guide for the implementation phase of the HBnB application. Its objective is to define the system's architecture, data structures, and interaction logic to ensure consistency, scalability, and technical excellence.
-
-**Project Overview**
-HBnB is a high-end booking platform designed to facilitate interactions between hosts and travelers. This version focuses on a diverse lodging ecosystem, including **Ryokans**, **Business Hotels**, and specialized accommodations. This document provides a detailed overview of the system’s design, transitioning from high-level packages to specific API call sequences.
+**Authors:** [@d-serigba](https://github.com/d-serigba) & binôme  
+**Repository:** [holbertonschool-hbnb](https://github.com/d-serigba/holbertonschool-hbnb/tree/main)
 
 ---
 
-### 2. High-Level Architecture (Task 0)
+## 📚 Table of Contents
 
-The system is built upon a **Three-Layer Architecture** to ensure a strict separation of concerns, facilitating independent development and testing of each component.
+- [Overview](#overview)
+- [Part 1 — UML & Backend Foundation](#part-1--uml--backend-foundation)
+- [Part 2 — Database Persistence with SQLAlchemy](#part-2--database-persistence-with-sqlalchemy)
+- [Part 3 — Authentication, Security & Dockerization](#part-3--authentication-security--dockerization)
+- [Part 4 — Frontend Client](#part-4--frontend-client)
+- [Tech Stack](#tech-stack)
+- [Authors](#authors)
 
-#### **Package Diagram**
+---
 
-```mermaid
-classDiagram
-    class Presentation_Layer {
-        <<Package>>
-        +ServiceAPI
-        +Endpoints
-    }
-    class Business_Logic_Layer {
-        <<Package>>
-        +User
-        +Place
-        +Review
-        +Amenity
-    }
-    class Persistence_Layer {
-        <<Package>>
-        +DatabaseAccess
-        +Data_Persistence
-    }
+## Overview
 
-    Presentation_Layer --> Business_Logic_Layer : Facade Pattern
-    Business_Logic_Layer --> Persistence_Layer : Database Operations
+The **HBnB Project** project is a multi-phase software engineering project completed at Holberton School. The goal is to build a simplified clone of AirBnB from the ground up, incrementally adding layers of complexity: from modeling and API design, to persistent storage, secure authentication, and a dynamic frontend.
+
+Each part builds directly on the previous one, simulating a real-world iterative development workflow.
+
+---
+
+## Part 1 — UML & Backend Foundation
+
+> *Architecture design, business logic, in-memory storage, and REST API*
+
+### Objectives
+
+- Design the application's architecture using **UML diagrams** (class diagrams, sequence diagrams, package diagrams)
+- Implement the **business logic layer** with a clean separation of concerns
+- Build a **RESTful API** using **Flask** and **flask-restx**
+- Use an **in-memory repository** as temporary data storage
+- Apply the **Facade pattern** to decouple API routes from business logic
+- Write comprehensive **unit tests** using `unittest`
+
+### Key Concepts
+
+- Three-layer architecture: Presentation → Business Logic → Persistence
+- Models: `User`, `Place`, `Review`, `Amenity` (all inheriting from `BaseModel`)
+- CRUD endpoints for all entities
+- Input validation and structured error responses
+
+### Structure
 
 ```
-
-**Explanatory Notes:**
-
-* **Design Decision**: We utilize the **Facade Pattern** as the unique gateway between the Presentation and Business Logic layers.
-* **Rationale**: This decouples the API from the internal complexities of the models, allowing for changes in business rules without impacting the end-user interface.
-* **Layers**:
-* **Presentation**: Handles HTTP requests/responses and user input.
-* **Business Logic**: Orchestrates core operations and manages system entities.
-* **Persistence**: Dedicated solely to long-term data storage and integrity.
-
-
-
----
-
-### 3. Business Logic Layer (Task 1)
-
-The core of HBnB centers on a reusable `BaseModel` and specialized entities, ensuring a clean and professional code structure.
-
-#### **Detailed Class Diagram**
-
-```mermaid
-classDiagram
-    direction TB
-    class BaseModel {
-        <<abstract>>
-        - id : UUID
-        - created_at : DateTime
-        - updated_at : DateTime
-        +save() void
-        +to_dict() dict
-    }
-    class User {
-        + email : str
-        - password : str
-        + first_name : str
-        + last_name : str
-        + register() bool
-        + authenticate() bool
-        + add_place() bool
-    }
-    class Place {
-        + title : str
-        + description : str
-        + price : float
-        - latitude : float
-        - longitude : float
-        + list_all() List
-    }
-    class Amenity {
-        + name : str
-        + description : str
-    }
-    class Review {
-        + text : str
-        + rating : float
-    }
-
-    BaseModel <|-- User : inheritance
-    BaseModel <|-- Place : inheritance
-    BaseModel <|-- Review : inheritance
-    BaseModel <|-- Amenity : inheritance
-    
-    User "1" --> "0..*" Place : owns
-    Place "0..*" --> "0..*" Amenity : features
-    Review "0..*" --> "1" Place : feedback_on
-    User "1" --> "0..*" Review : authors
-
+part1/
+├── app/
+│   ├── api/          # Flask routes & namespaces
+│   ├── models/       # Business logic & entity classes
+│   └── services/     # Facade layer
+├── tests/            # Unit tests
+└── run.py
 ```
 
 ---
 
-### 4. API Interaction Flow (Task 2)
+## Part 2 — Database Persistence with SQLAlchemy
 
-The dynamics of the system are captured through sequence diagrams, illustrating the data flow during critical operations.
+> *Replacing in-memory storage with a real relational database*
 
-#### **Sample Sequence: User Registration**
+### Objectives
 
-```mermaid
-sequenceDiagram
-    participant U as Client
-    participant P as API Endpoints
-    participant F as HBnBFacade
-    participant B as User Model
-    participant D as Persistence
+- Integrate **SQLAlchemy ORM** to replace the in-memory repository
+- Map all models (`User`, `Place`, `Review`, `Amenity`) to **MySQL** database tables
+- Implement **many-to-many relationships** (e.g., Place ↔ Amenity)
+- Ensure backward compatibility with the existing API layer
+- Use the **repository pattern** with a database-backed implementation
 
-    U->>P: POST /users (data)
-    P->>F: register_user(data)
-    F->>B: new User()
-    B->>B: validate()
-    B->>D: save() (via BaseModel)
-    D-->>B: Success
-    B-->>F: User Object
-    F-->>P: JSON Response (to_dict)
-    P-->>U: 201 Created
+### Key Concepts
 
+- SQLAlchemy declarative models with relationships and cascade operations
+- Migration-ready schema with `db.create_all()`
+- Environment-based configuration (development / production)
+- Data integrity with foreign key constraints
+
+### Structure
+
+```
+part2/
+├── app/
+│   ├── api/
+│   ├── models/       # SQLAlchemy-mapped entities
+│   ├── persistence/  # DB repository (replaces in-memory)
+│   └── services/
+├── instance/
+│   └── development.db
+└── run.py
 ```
 
 ---
 
-### 5. Final Design Rationale
+## Part 3 — Authentication, Security & Dockerization
 
-* **Data Persistence**: All entities inherit from `BaseModel` to ensure a standardized persistence protocol, using UUIDs for global uniqueness.
-* **Security by Design**: Sensitive attributes like passwords are kept private, and validation occurs at the Business Logic layer before any database write.
-* **Long-Term Vision**: This architecture avoids "short-termism" by providing a modular framework capable of supporting future expansions, such as the **PARENT(HÈSES)** ecosystem or high-tech integration via **Glassier**.
+> *Securing the API with JWT and containerizing the application*
+
+### Objectives
+
+- Implement **JWT-based authentication** using `flask-jwt-extended`
+- Hash passwords securely with **bcrypt**
+- Protect API endpoints with authentication and **role-based authorization** (admin vs regular user)
+- **Dockerize** the application using an Alpine Linux base image and **Gunicorn** as the WSGI server
+
+### Key Concepts
+
+- Login endpoint returns a signed JWT token
+- Protected routes verify tokens on each request
+- Admin-only routes enforced via JWT claims
+- Docker setup: `Dockerfile`, environment variables, volume for persistent data
+
+### Structure
+
+```
+part3/
+├── app/
+│   ├── api/
+│   │   └── auth.py   # Login & protected route decorators
+│   ├── models/
+│   └── services/
+├── Dockerfile
+├── requirements.txt
+└── wsgi.py
+```
+
+### Docker Usage
+
+```bash
+# Build the image
+docker build -t hbnb .
+
+# Run the container
+docker run -d -p 5000:5000 hbnb
+```
 
 ---
 
-### 6. Technical Requirements for Implementation
+## Part 4 — Frontend Client
 
-To maintain the standards of excellence required for this project :
+> *Building an interactive UI that communicates with the backend API*
 
-* **Environment**: Python 3.x with a dedicated virtual environment.
-* **Core Libraries**: `Flask` for the API, `UUID` for unique identification, and `datetime` for timestamps.
-* **Testing**: Mandatory unit testing with `pytest` for every model and API endpoint.
+### Objectives
+
+- Develop a dynamic frontend using **HTML5**, **CSS3**, and **JavaScript ES6**
+- Consume the REST API via the **Fetch API** (AJAX)
+- Implement **user authentication** with JWT tokens stored in cookies
+- Build the following pages:
+  - `index.html` — List of all places with country filter
+  - `login.html` — Login form that retrieves and stores a JWT cookie
+  - `place.html` — Detailed view of a specific place
+  - `add_review.html` — Review form (authenticated users only)
+- Redirect unauthenticated users to the login page
+
+### Key Concepts
+
+- Cookie-based session management (JWT stored client-side)
+- Client-side filtering without page reloads
+- Conditional rendering based on authentication state
+- Fetch API with Authorization headers
+
+### Structure
+
+```
+part4/
+├── index.html
+├── login.html
+├── place.html
+├── add_review.html
+├── styles/
+│   └── main.css
+└── scripts/
+    ├── index.js
+    ├── login.js
+    ├── place.js
+    └── add_review.js
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Python 3.x |
+| Web Framework | Flask, flask-restx |
+| ORM | SQLAlchemy |
+| Database | MySQL / SQLite |
+| Authentication | JWT (`flask-jwt-extended`), bcrypt |
+| Containerization | Docker, Gunicorn |
+| Frontend | HTML5, CSS3, JavaScript ES6 |
+| Testing | unittest |
+
+---
+
+## Authors
+
+- **Dylan Serigba** — [@d-serigba](https://github.com/d-serigba)
+- **David Dufont** — [@dufontdd](https://github.com/dufontdd)
+
+*Project completed at [Holberton School](https://www.holbertonschool.com/) as part of the Higher Level Programming curriculum.*
