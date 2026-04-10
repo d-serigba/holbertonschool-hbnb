@@ -1,0 +1,12 @@
+{
+    "users": [],
+    "places": [],
+    "amenities": [
+        {
+            "name": "Piscine",
+            "description": "Piscine chauff\u00e9e",
+            "id": 1
+        }
+    ],
+    "reviews": []
+}

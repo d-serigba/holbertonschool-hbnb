@@ -1,0 +1,232 @@
+/* =========================
+   1. STYLES GLOBAUX
+========================= */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header .logo {
+    height: 45px;
+}
+
+nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #ff5a5f;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+    margin-top: 40px;
+}
+
+/* =========================
+   2. BOUTONS
+========================= */
+.details-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.3s;
+    display: inline-block;
+    width: auto;
+}
+
+.details-button:hover {
+    background-color: #0056b3;
+}
+
+.login-button {
+    background-color: #ff5a5f;
+    color: white !important;
+    padding: 8px 20px;
+    border-radius: 6px;
+}
+
+.login-button:hover {
+    background-color: #e04a4f;
+}
+
+/* =========================
+   3. INDEX : FILTRES & CARTES
+========================= */
+main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+#filter-container {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.place-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex; /* Aligne Image | Infos */
+    gap: 25px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.place-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.place-thumb {
+    width: 250px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.place-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.place-info h2 {
+    margin: 0 0 10px 0;
+    color: #222;
+}
+
+.price-tag {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #28a745;
+    margin: 10px 0;
+}
+
+/* =========================
+   4. PAGE DÉTAILS
+========================= */
+.main-image {
+    width: 100%;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin: 20px 0;
+}
+
+.place-specs {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.review-card {
+    background: #fff;
+    border-left: 5px solid #ff5a5f;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* =========================
+   5. FORMULAIRES (Login & Review)
+========================= */
+#review-form, #login-form {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+textarea, input[type="email"], input[type="password"], select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Important pour que le padding ne dépasse pas */
+}
+
+textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #e04a4f;
+}
+
+/* Image d'icône pour le login */
+.icon {
+    width: 80px;
+    display: block;
+    margin: 0 auto 20px;
+}
+
+/* =========================
+   6. RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .place-card {
+        flex-direction: column;
+    }
+    .place-thumb {
+        width: 100%;
+        height: 200px;
+    }
+}
+
+/* Fix image place details */
+.main-image {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    
+    border-radius: 15px;
+    margin: 20px 0;
+    display: block;
+}
